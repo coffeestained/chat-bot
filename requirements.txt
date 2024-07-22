@@ -1,0 +1,10 @@
+aiohttp
+scikit-learn
+numpy
+requests
+pymongo
+redis
+flask
+python-dotenv
+twitchio
+gunicorn
