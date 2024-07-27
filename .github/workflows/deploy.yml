@@ -61,11 +61,11 @@ jobs:
           docker load -i chat-bot.tar
           docker load -i chat-management.tar
 
-          docker stop chat-bot || true
-          docker stop chat-management || true
+          docker stop chat-bot 2>/dev/null || true
+          docker stop chat-management 2>/dev/null || true
 
-          docker rm chat-bot || true
-          docker rm chat-management || true
+          docker rmi -f $(docker images chat-bot:latest -q) 2>/dev/null || true
+          docker rmi -f $(docker images chat-management:latest -q) 2>/dev/null || true
 
           docker run -d --name chat-bot \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
