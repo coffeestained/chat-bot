@@ -67,9 +67,9 @@ jobs:
           docker rmi -f $(docker images chat-bot:latest -q) 2>/dev/null || true
           docker rmi -f $(docker images chat-management:latest -q) 2>/dev/null || true
 
-          docker run -d --name chat-bot -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-bot:latest
+          docker run chat-bot -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-bot:latest
 
-          docker run -d --name chat-management --network=host -e REDIRECT_URI=${{ secrets.REDIRECT_URI }} -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-management:latest
+          docker run chat-management --network=host -e REDIRECT_URI=${{ secrets.REDIRECT_URI }} -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-management:latest
 
     - name: Remove Key
       run: |
