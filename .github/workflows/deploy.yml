@@ -45,22 +45,6 @@ jobs:
         script: |
           cd /${{ secrets.CHAT_USER }}/projects/chat-bot
 
-          if [ ! -f "/${{ secrets.CHAT_USER }}/.ssh/deploy.key" ]; then
-            openssl genpkey -algorithm RSA -out deploy.key -aes256
-          fi
-
-          if [ ! -f "/${{ secrets.CHAT_USER }}/.ssh/deploy.csr" ]; then
-            openssl req -new -key deploy.key -out deploy.csr
-          fi
-
-          if [ ! -f "/${{ secrets.CHAT_USER }}/.ssh/deploy.crt" ]; then
-            openssl x509 -req -days 365 -in deploy.csr -signkey deploy.key -out deploy.crt
-          fi
-
-          if [ ! -f "/${{ secrets.CHAT_USER }}/.ssh/deploy.crt" ]; then
-            openssl x509 -in deploy.crt -text -noout
-          fi
-          
           gunzip chat-bot.tar.gz
           gunzip chat-management.tar.gz
 
@@ -69,11 +53,9 @@ jobs:
 
           docker stop chat-bot || true
           docker stop chat-management || true
-          docker stop nginx || true
 
           docker rm chat-bot || true
           docker rm chat-management || true
-          docker rm nginx || true
 
           docker run -d --name chat-bot \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
@@ -89,81 +71,6 @@ jobs:
             -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} \
             -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} \
             chat-management:latest
-
-          sudo apt-get update
-          sudo apt-get install -y nginx
-
-          sudo rm -f /etc/nginx/sites-enabled/chat-management
-          sudo rm -f /etc/nginx/sites-available/chat-management
-
-          echo 'server {
-              listen 80;
-              server_name ${{ secrets.CHAT_HOST }};
-              location / {
-                  proxy_pass http://127.0.0.1:5000;
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-              }
-              listen 443 ssl;
-              ssl_certificate /${{ secrets.CHAT_USER }}/.ssh/deploy.crt;
-              ssl_certificate_key /${{ secrets.CHAT_USER }}/.ssh/deploy.key;
-          
-              ssl_protocols TLSv1.2 TLSv1.3;
-              ssl_ciphers HIGH:!aNULL:!MD5;
-          }' | sudo tee /etc/nginx/sites-available/chat-management
-
-          sudo ln -s /etc/nginx/sites-available/chat-management /etc/nginx/sites-enabled/
-
-          sudo systemctl restart nginx
-
-          # List of allowed ports
-          ALLOWED_PORTS=(22 80 443 5000)
-
-          # Flush existing rules
-          iptables -F
-          iptables -X
-
-          # Set default policies to drop all traffic
-          iptables -P INPUT DROP
-          iptables -P FORWARD DROP
-          iptables -P OUTPUT DROP
-
-          # Allow traffic on the loopback interface
-          iptables -A INPUT -i lo -j ACCEPT
-          iptables -A OUTPUT -o lo -j ACCEPT
-
-          # Allow established and related connections (important for SSH and existing connections)
-          iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-          iptables -A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-          # Allow traffic on allowed ports
-          for PORT in "${ALLOWED_PORTS[@]}"; do
-              iptables -A INPUT -p tcp --dport $PORT -j ACCEPT
-              iptables -A OUTPUT -p tcp --sport $PORT -j ACCEPT
-          done
-
-          # Allow DNS traffic (for apt package installations)
-          iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
-          iptables -A INPUT -p udp --sport 53 -j ACCEPT
-          iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
-          iptables -A INPUT -p tcp --sport 53 -j ACCEPT
-
-          # Allow HTTP and HTTPS traffic for apt-get
-          iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
-          iptables -A INPUT -p tcp --sport 80 -j ACCEPT
-          iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
-          iptables -A INPUT -p tcp --sport 443 -j ACCEPT
-
-          # Allow MongoDB traffic only from localhost
-          iptables -A INPUT -p tcp -s 127.0.0.1 --dport 27017 -j ACCEPT
-          iptables -A OUTPUT -p tcp -d 127.0.0.1 --sport 27017 -j ACCEPT
-
-          # Save the iptables rules
-          iptables-save > /etc/iptables/rules.v4
-
-          echo "Firewall rules updated. Only the following ports are allowed: ${ALLOWED_PORTS[@]}"
 
     - name: Remove Key
       run: |
