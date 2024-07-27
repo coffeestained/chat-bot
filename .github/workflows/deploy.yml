@@ -58,18 +58,18 @@ jobs:
           gunzip chat-bot.tar.gz
           gunzip chat-management.tar.gz
 
-          docker load -i chat-bot.tar
-          docker load -i chat-management.tar
-
           docker stop chat-bot 2>/dev/null || true
           docker stop chat-management 2>/dev/null || true
 
           docker rmi -f $(docker images chat-bot:latest -q) 2>/dev/null || true
           docker rmi -f $(docker images chat-management:latest -q) 2>/dev/null || true
 
-          docker run chat-bot -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-bot:latest
+          docker load -i chat-bot.tar
+          docker load -i chat-management.tar          
 
-          docker run chat-management --network=host -e REDIRECT_URI=${{ secrets.REDIRECT_URI }} -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-management:latest
+          docker run  chat-bot -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-bot:latest
+
+          docker run -d --name chat-management --network=host -e REDIRECT_URI=${{ secrets.REDIRECT_URI }} -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-management:latest
 
     - name: Remove Key
       run: |
