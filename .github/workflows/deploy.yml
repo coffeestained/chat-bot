@@ -39,7 +39,7 @@ jobs:
         key: ${{ secrets.CHAT_PRIVATE_KEY }}
         script: |
           cd /${{ secrets.CHAT_USER }}/projects/chat-bot
-          rm -R *
+          [ -f * ] && rm -R *
 
     - name: SCP files to server
       run: |
