@@ -67,10 +67,10 @@ jobs:
           docker load -i chat-bot.tar
           docker load -i chat-management.tar          
 
-docker run -d --name chat-bot -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-bot:latest
+          docker run -d --name chat-bot -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-bot:latest
 
-docker run -d --name chat-management --network=host -e REDIRECT_URI=${{ secrets.REDIRECT_URI }} -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI:-$DEFAULT_REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-management:latest
-            
+          docker run -d --name chat-management --network=host -e REDIRECT_URI=${{ secrets.REDIRECT_URI }} -e MONGO_URI=${{ secrets.MONGO_URI }} -e REDIS_URI=${{ secrets.REDIS_URI:-$DEFAULT_REDIS_URI }} -e ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} -e REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }} chat-management:latest
+                      
     - name: Remove Key
       run: |
         rm key.secret
