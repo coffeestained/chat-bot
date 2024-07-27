@@ -39,7 +39,23 @@ jobs:
         key: ${{ secrets.CHAT_PRIVATE_KEY }}
         script: |
           cd /${{ secrets.CHAT_USER }}/projects/chat-bot
-          [ -f * ] && rm -R *
+          FILE="/path/to/file"
+
+          if [ -f "$FILE" ]; then
+              rm "$FILE"
+              echo "$FILE has been removed."
+          else
+              echo "$FILE does not exist."
+          fi
+
+          FILE="/path/to/file"
+
+          if [ -f "$FILE" ]; then
+              rm "$FILE"
+              echo "$FILE has been removed."
+          else
+              echo "$FILE does not exist."
+          fi
 
     - name: SCP files to server
       run: |
@@ -55,6 +71,9 @@ jobs:
         script: |
           cd /${{ secrets.CHAT_USER }}/projects/chat-bot
 
+          rm -f chat-bot.tar.gz chat-management.tar.gz
+          rm -f chat-bot.tar chat-management.tar
+          
           gunzip chat-bot.tar.gz
           gunzip chat-management.tar.gz
 
