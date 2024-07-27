@@ -31,6 +31,16 @@ jobs:
       run: |
         echo "${{ secrets.CHAT_PRIVATE_KEY }}" > key.secret && chmod 0600 key.secret
 
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.CHAT_HOST }}
+        username: ${{ secrets.CHAT_USER }}
+        key: ${{ secrets.CHAT_PRIVATE_KEY }}
+        script: |
+          cd /${{ secrets.CHAT_USER }}/projects/chat-bot
+          rm -R *
+
     - name: SCP files to server
       run: |
         scp -i key.secret -o StrictHostKeyChecking=no chat-bot.tar.gz ${{ secrets.CHAT_USER }}@${{ secrets.CHAT_HOST }}:/${{ secrets.CHAT_USER }}/projects/chat-bot/
