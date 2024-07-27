@@ -38,8 +38,8 @@ jobs:
         username: ${{ secrets.CHAT_USER }}
         key: ${{ secrets.CHAT_PRIVATE_KEY }}
         script: |
-          rm -f chat-bot.tar.gz chat-management.tar.gz
-          rm -f chat-bot.tar chat-management.tar
+          rm -f /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-bot.tar.gz /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-management.tar.gz
+          rm -f /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-bot.tar /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-management.tar
 
     - name: SCP files to server
       run: |
