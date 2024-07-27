@@ -69,7 +69,7 @@ jobs:
 
           docker run -d --name chat-bot \
             -e MONGO_URI="${MONGO_URI}" \
-            -e REDIS_URI="${REDIS_URI:-$DEFAULT_REDIS_URI}" \
+            -e REDIS_URI="${REDIS_URI}" \
             -e ACCESS_TOKEN="${ACCESS_TOKEN}" \
             -e REFRESH_TOKEN="${REFRESH_TOKEN}" \
             chat-bot:latest
@@ -77,11 +77,11 @@ jobs:
           docker run -d --name chat-management --network=host \
             -e REDIRECT_URI="${REDIRECT_URI}" \
             -e MONGO_URI="${MONGO_URI}" \
-            -e REDIS_URI="${REDIS_URI:-$DEFAULT_REDIS_URI}" \
+            -e REDIS_URI="${REDIS_URI}" \
             -e ACCESS_TOKEN="${ACCESS_TOKEN}" \
             -e REFRESH_TOKEN="${REFRESH_TOKEN}" \
             chat-management:latest  
-            
+
     - name: Remove Key
       run: |
         rm key.secret
