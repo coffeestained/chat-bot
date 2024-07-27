@@ -63,6 +63,8 @@ jobs:
 
           docker rmi -f $(docker images chat-bot:latest -q) 2>/dev/null || true
           docker rmi -f $(docker images chat-management:latest -q) 2>/dev/null || true
+          docker rm chat-bot
+          docker rm chat-management
 
           docker load -i chat-bot.tar
           docker load -i chat-management.tar          
