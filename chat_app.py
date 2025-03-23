@@ -32,7 +32,6 @@ async def run_flask():
 if __name__ == "__main__":
     bot = Bot(db, redis_client, executor)
     loop = asyncio.get_event_loop()
-    loop.create_task(bot.scheduled_updates())
     loop.run_until_complete(asyncio.gather(
         bot.twitch_bot.start(),
         run_flask()
