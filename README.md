@@ -10,7 +10,7 @@ Develop a Twitch chat bot that interacts dynamically with users. The bot process
 - Twitch OAuth integration
 - Logging with rotation every 4 months
 - Data storage with Redis and MongoDB
-- Firewall setup to secure the server
+- Firewall setup to secure the server 
 
 ## Project Structure
 
