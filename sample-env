@@ -7,3 +7,4 @@ CHANNEL: Desired channel to join
 MONGO_URI: MongoDB URL
 REDIS_URI: Redis URL
 LOG_LEVEL: Log level (e.g., DEBUG, INFO, ERROR) 
+STD_OUT: True or False - if true, logs will be printed to the console
