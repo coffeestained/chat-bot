@@ -8,13 +8,3 @@ services:
     command: python3 chat_app.py
     ports:
       - "3001:3001"
-
-  chat-management:
-    build:
-      context: .
-      dockerfile: Dockerfile-Management
-    environment:
-      - FLASK_APP=management_app.py
-    command: flask run --host=0.0.0.0
-    ports:
-      - "3000:3000"
