@@ -3,4 +3,3 @@ TWITCH_CLIENT_ID: Your Twitch client ID
 TWITCH_CLIENT_SECRET: Your Twitch client secret
 TWITCH_REDIRECT_URI: Your Twitch redirect URI
 LOG_LEVEL: Log level (e.g., DEBUG, INFO, ERROR)
-
