@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from twitchio.ext import commands
 from lib.redis import get_redis
 from lib.mongodb import get_db
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from services.generative_service import generate_response
 from services.custom_model_service import custom_model
 from utils.logging import logger 
@@ -69,7 +69,7 @@ def update_model(message):
         messages_collection.insert_one({
             "message": message,
             "response": response,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(UTC),
             "feedback_score": random.randint(0, 100)  # Simulated feedback score
         })
 
@@ -100,7 +100,7 @@ async def scheduled_updates():
 
 def update_highest_feedback_response():
     try:
-        ten_minutes_ago = datetime.utcnow() - timedelta(minutes=10)
+        ten_minutes_ago = datetime.now(UTC) - timedelta(minutes=10)
         recent_messages = messages_collection.find({"timestamp": {"$gte": ten_minutes_ago}})
         best_response = max(recent_messages, key=lambda msg: msg.get("feedback_score", 0), default=None)
         if best_response:

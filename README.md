@@ -56,11 +56,15 @@ twitch_bot/
 
 3. **Environment Variables**:
     Set the following environment variables:
-    - `DISCORD_TOKEN`: Your Discord bot token
-    - `TWITCH_CLIENT_ID`: Your Twitch client ID
-    - `TWITCH_CLIENT_SECRET`: Your Twitch client secret
-    - `TWITCH_REDIRECT_URI`: Your Twitch redirect URI
-    - `LOG_LEVEL`: Log level (e.g., `DEBUG`, `INFO`, `ERROR`)
+    - DISCORD_TOKEN: Your Discord bot token
+    - TWITCH_CLIENT_ID: Your Twitch client ID
+    - TWITCH_CLIENT_SECRET: Your Twitch client secret
+    - TWITCH_REDIRECT_URI: Your Twitch redirect URI
+    - ACCESS_TOKEN: Your Twitch access token
+    - CHANNEL: Desired channel to join
+    - MONGO_URI: MongoDB URL
+    - REDIS_URI: Redis URL
+    - LOG_LEVEL: Log level (e.g., DEBUG, INFO, ERROR) 
 
 ## Usage
 
