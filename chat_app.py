@@ -1,7 +1,9 @@
 import os
 import asyncio
+import uvicorn
 from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
+from flask import Flask
 from twitchio.ext import commands
 from lib.redis import get_redis
 from lib.mongodb import get_db
@@ -20,6 +22,11 @@ db = get_db()
 messages_collection = db["messages"]
 state_collection = db["state"]
 
+# Flask app
+app = Flask(__name__)
+app.secret_key = os.urandom(24)
+
+# Thread pool executor
 executor = ThreadPoolExecutor()
 
 class Bot(commands.Bot):
@@ -110,8 +117,17 @@ def update_highest_feedback_response():
     except Exception as e:
         logger.error(f'Error updating highest feedback response: {str(e)}')
 
+async def run_flask():
+    config = uvicorn.Config(app, host="0.0.0.0", port=3000, log_level="info")
+    server = uvicorn.Server(config)
+    await server.serve()
+
 if __name__ == "__main__":
     bot = Bot()
     loop = asyncio.get_event_loop()
     loop.create_task(scheduled_updates())
-    loop.run_until_complete(bot.start())
+    loop.run_until_complete(asyncio.gather(
+        bot.start(),
+        run_flask()
+    ))
+    
