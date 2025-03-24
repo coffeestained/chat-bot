@@ -1,5 +1,6 @@
 from collections import Counter, deque
 from datetime import UTC, datetime, timedelta, timezone
+from utils.logging import logger 
 import re
 
 MAX_AGE=1
@@ -29,6 +30,7 @@ class MemoryDeque:
         self.queue = deque(maxlen=max_size)
 
     def enqueue(self, item):
+        logger.debug(f'Enqueuing message: {item}')
         self.queue.append(Message(item))
 
     def dequeue(self):
@@ -50,7 +52,9 @@ class MemoryDeque:
         keywords = []
         for message in self.queue:
             keywords.extend(message.keywords)
-        return Counter(keywords).most_common(MAX_POPULAR_KEYWORDS)
+        popular = Counter(keywords).most_common(MAX_POPULAR_KEYWORDS)
+        logger.debug(f'Popular keywords: {popular}')
+        return popular
     
     def trim_old_messages(self):
         self.queue = deque(
@@ -60,7 +64,7 @@ class MemoryDeque:
     def trim_condition(self, message):
         message_time = message.timestamp.replace(tzinfo=timezone.utc)
         if message_time < datetime.now(UTC) - timedelta(minutes=MAX_AGE):
-            print(f'Trimming message: {message}')
+            logger.debug(f'Trimming message: {message}')
             return True
         return False
 
