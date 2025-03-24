@@ -10,7 +10,7 @@ Develop a Twitch chat bot that interacts dynamically with users. The bot process
 - Twitch OAuth integration
 - Logging with rotation every 4 months
 - Data storage with Redis and MongoDB
-- Firewall setup to secure the server
+- Firewall setup to secure the server 
 
 ## Project Structure
 
@@ -56,11 +56,23 @@ twitch_bot/
 
 3. **Environment Variables**:
     Set the following environment variables:
-    - `DISCORD_TOKEN`: Your Discord bot token
-    - `TWITCH_CLIENT_ID`: Your Twitch client ID
-    - `TWITCH_CLIENT_SECRET`: Your Twitch client secret
-    - `TWITCH_REDIRECT_URI`: Your Twitch redirect URI
-    - `LOG_LEVEL`: Log level (e.g., `DEBUG`, `INFO`, `ERROR`)
+    - DISCORD_TOKEN: Your Discord bot token
+    - TWITCH_CLIENT_ID: Your Twitch client ID
+    - TWITCH_CLIENT_SECRET: Your Twitch client secret
+    - TWITCH_REDIRECT_URI: Your Twitch redirect URI
+    - ACCESS_TOKEN: Your Twitch access token
+    - MESSAGE_INTERVAL_IN_MINUTES: How often to send messages   
+    - MODE = llm -- use llm to generate responses (coming soon markov chain responses (no LLM required) and possibly local AI solutions)
+    - LLM_URI: Your LLM URI 
+    - LLM_API_KEY: Your LLM API key
+    - LLM_MESSAGE_PREFIX: Your LLM message prefix
+    - LLM_MESSAGE_SUFFIX: Your LLM message suffix
+    - CHANNEL: Desired channel to join
+    - MONGO_URI: MongoDB URL
+    - REDIS_URI: Redis URL
+    - LOG_LEVEL: Log level (e.g., DEBUG, INFO, ERROR) 
+    - STD_OUT: True or False - if true, logs will be printed to the console
+    - SHOW_MESSAGES: True or False - if true, messages will be printed to the console
 
 ## Usage
 
@@ -68,9 +80,6 @@ twitch_bot/
     ```bash
     docker start twitch_bot
     ```
-
-2. **Access the authentication URL**:
-    Visit `http://yourserver.com/login` to authenticate with Twitch.
 
 ## Contributions
 
