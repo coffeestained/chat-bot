@@ -62,7 +62,8 @@ twitch_bot/
     - TWITCH_REDIRECT_URI: Your Twitch redirect URI
     - ACCESS_TOKEN: Your Twitch access token
     - MESSAGE_INTERVAL_IN_MINUTES: How often to send messages   
-    - MODE = llm -- use llm to generate responses (coming soon markov chain responses (no LLM required) and possibly local AI solutions)
+    - MODE = llm || markov -- use llm to generate responses requires LLM_URI and LLM_API_KEY. Use markov to generate responses from markov chains.
+    - STOP_WORDS_URL: URL to the stop words text file. Must be a text file with one word per line.
     - LLM_URI: Your LLM URI 
     - LLM_API_KEY: Your LLM API key
     - LLM_MESSAGE_PREFIX: Your LLM message prefix
