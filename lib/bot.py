@@ -32,6 +32,7 @@ class Bot():
         self.loop.create_task(self.do_response())
 
     async def process_message(self, message):
+        self.memory_deque.trim_old_messages()
         # Add message to FIFO queue
         self.memory_deque.enqueue(message)
 
@@ -61,7 +62,7 @@ class Bot():
                     response = generate_llm_response(self.memory_deque.get_popular_keywords())
                 if response:
                     logger.info(f'Response: {response}')    
-                    channel = self.twitch_bot.get_channel(os.getenv('MY_CHANNEL', ''))
+                    channel = self.twitch_bot.get_channel(os.getenv('CHANNEL', ''))
                     await channel.send(response)
 
             await asyncio.sleep(interval)

@@ -1,6 +1,8 @@
 from collections import Counter, deque
+from datetime import UTC, datetime, timedelta, timezone
 import re
 
+MAX_AGE=1
 MAX_MEMORY_SIZE = 2000
 MAX_POPULAR_KEYWORDS = 100
 STOP_WORDS = []
@@ -49,6 +51,18 @@ class MemoryDeque:
         for message in self.queue:
             keywords.extend(message.keywords)
         return Counter(keywords).most_common(MAX_POPULAR_KEYWORDS)
+    
+    def trim_old_messages(self):
+        self.queue = deque(
+            message for message in self.queue if not self.trim_condition(message)
+        )
+
+    def trim_condition(self, message):
+        message_time = message.timestamp.replace(tzinfo=timezone.utc)
+        if message_time < datetime.now(UTC) - timedelta(minutes=MAX_AGE):
+            print(f'Trimming message: {message}')
+            return True
+        return False
 
     def __len__(self):
         return len(self.queue)
