@@ -1,9 +1,11 @@
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
+import sys
 
-# Log level constant
+# Log level constant and STD flag from environment
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
+STD = os.getenv('STD_OUT', 'False').lower() == 'true'
 
 # Create logs directory if it doesn't exist
 log_directory = 'logs'
@@ -19,23 +21,32 @@ log_levels = {
 
 # Create a logger
 logger = logging.getLogger('TwitchBotLogger')
-logger.setLevel(log_levels[LOG_LEVEL])
+logger.setLevel(log_levels.get(LOG_LEVEL, logging.DEBUG))
 
 # Create a file handler with log rotation every 4 months
-handler = TimedRotatingFileHandler(os.path.join(log_directory, 'chat-bot.log'), when='M', interval=4, backupCount=6)
-handler.setLevel(log_levels[LOG_LEVEL])
+file_handler = TimedRotatingFileHandler(
+    os.path.join(log_directory, 'chat-bot.log'),
+    when='M',
+    interval=4,
+    backupCount=6
+)
+file_handler.setLevel(log_levels.get(LOG_LEVEL, logging.DEBUG))
 
-# Create a log formatter
+# Formatter
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
 
-# Add the handler to the logger
-logger.addHandler(handler)
+# Add file handler
+logger.addHandler(file_handler)
 
-# Set log level based on the constant
-if LOG_LEVEL == 'DEBUG':
-    logger.setLevel(logging.DEBUG)
-elif LOG_LEVEL == 'INFO':
-    logger.setLevel(logging.INFO)
-else:
-    logger.setLevel(logging.ERROR)
+# If STD mode is enabled, add stdout handler
+if STD:
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setLevel(logging.DEBUG)  # Always output everything to stdout
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
+# Example usage
+logger.debug('Debug message')
+logger.info('Info message')
+logger.error('Error message')

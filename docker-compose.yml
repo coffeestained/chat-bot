@@ -7,14 +7,4 @@ services:
       dockerfile: Dockerfile-Bot
     command: python3 chat_app.py
     ports:
-      - "5001:5001"
-
-  chat-management:
-    build:
-      context: .
-      dockerfile: Dockerfile-Management
-    environment:
-      - FLASK_APP=management_app.py
-    command: flask run --host=0.0.0.0
-    ports:
-      - "5000:5000"
+      - "3001:3001"

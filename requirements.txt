@@ -8,3 +8,5 @@ flask
 python-dotenv
 twitchio
 gunicorn
+flask
+uvicorn
