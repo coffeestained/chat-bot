@@ -1,9 +1,10 @@
 import os
 import asyncio
+import re
 from dotenv import load_dotenv
 from twitchio.ext import commands
 from datetime import datetime, timedelta, UTC
-from services.generative_service import generate_llm_response
+from services.generative_service import generate_llm_response, generate_markov_chain_response
 from utils.logging import logger 
 import random
 from utils.message_memory import MemoryDeque
@@ -60,6 +61,9 @@ class Bot():
                 response = None
                 if os.getenv('MODE') == 'llm':
                     response = generate_llm_response(self.memory_deque.get_popular_keywords())
+                elif os.getenv('MODE') == 'markov':
+                    self.memory_deque.combine_markov_chains()
+                    response = generate_markov_chain_response(self.memory_deque)    
                 if response:
                     logger.info(f'Response: {response}')    
                     channel = self.twitch_bot.get_channel(os.getenv('CHANNEL', ''))
