@@ -1,34 +1,47 @@
-# Twitch Chat Bot
+# Chat Bot
 
 ## Goal
 
-Develop a Twitch chat bot that interacts dynamically with users. The bot processes messages, generates responses, integrates with Twitch OAuth, logs activity, and stores data using Redis and MongoDB.
+Develop a chat bot that interacts dynamically with users. The bot processes messages, generates responses, integrates with Twitch using a Access Token, logs activity, and stores data using Redis and MongoDB. Supports two modes: Markov Chain and LLM.
 
 ## Features
 
 - Dynamic response generation
-- Twitch OAuth integration
+- Twitch integration
 - Logging with rotation every 4 months
 - Data storage with Redis and MongoDB
 - Firewall setup to secure the server 
+- Mode selection between Markov Chain and LLM
+- Docker containerization
+- GitHub Actions for CI/CD
 
 ## Project Structure
 
 ```
-twitch_bot/
-│
-├── chat_app.py # Main bot service
-├── services/
-│ ├── generative_service.py # Generates responses
-│ ├── custom_model_service.py # Custom model for predictions
-│ ├── integration_service.py # Integrates various services
-│ ├── auth_app.py # Handles Twitch OAuth
-├── utils/
-│ ├── logging.py # Logging configuration
-├── logs/ # Directory for log files
-├── firewall_setup.sh # Firewall configuration script
-├── requirements.txt # Project dependencies
-├── Dockerfile # Docker configuration for containerization
+chat_app.py # Main bot service
+services/
+├── generative_service.py # Generates responses
+├── custom_model_service.py # Custom model for predictions
+├── integration_service.py # Integrates various services
+utils/
+├── logging.py # Logging configuration  
+├── message_memory.py # Handles message memory  
+lib/
+├── bot.py # Bot class
+├── mongodb.py # MongoDB client
+├── redis.py # Redis client
+logs/
+├── ...*.log # Bot logs
+.github/workflows/
+├── ...*.yml # GitHub Actions workflows
+.env # Environment variables    
+.gitignore # Git ignore
+requirements.txt # Project dependencies
+README.md # This file
+LICENSE # License
+sample-env # Sample environment variables
+docker-compose.yml # Docker compose file
+Dockerfile-Bot
 ```
 
 
