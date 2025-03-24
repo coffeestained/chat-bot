@@ -1,12 +1,24 @@
 from collections import Counter, deque
 from datetime import UTC, datetime, timedelta, timezone
+import os
+import requests
 from utils.logging import logger 
-import re
+from dotenv import load_dotenv
 
-MAX_AGE=1
+load_dotenv()
+
+MAX_AGE=30
 MAX_MEMORY_SIZE = 2000
-MAX_POPULAR_KEYWORDS = 100
-STOP_WORDS = []
+MAX_POPULAR_KEYWORDS = 30
+
+STOP_WORD_CSV_URL = os.getenv('STOP_WORDS_URL', 'https://raw.githubusercontent.com/4troDev/profanity.csv/refs/heads/main/English.csv')
+
+# DOwnloads CSV to List
+def download_csv_to_list(url):
+    response = requests.get(url)
+    return response.text.splitlines()
+
+STOP_WORDS = download_csv_to_list(STOP_WORD_CSV_URL)
 
 class Message:
     def __init__(self, item):
@@ -15,6 +27,7 @@ class Message:
         self.author = item.author.name
         self.channel = item.channel.name
         self.keywords = self.get_keywords()
+        self.markov_chains = self.get_markov_chains()
 
     def __str__(self):
         return f"{self.timestamp}: {self.message}"
@@ -23,11 +36,18 @@ class Message:
         cleaned = self.message.split()
         filtered = [word for word in cleaned if word not in STOP_WORDS]
         return filtered
-
+    
+    def get_markov_chains(self):
+        tuple_list = []
+        for i in range(len(self.keywords) - 1):
+            tuple_list.append((self.keywords[i], [self.keywords[i + 1]]))
+        return tuple_list
+    
 class MemoryDeque:
     def __init__(self, max_size=MAX_MEMORY_SIZE):
         self.max_size = max_size
         self.queue = deque(maxlen=max_size)
+        self.markov_chains = {}
 
     def enqueue(self, item):
         logger.debug(f'Enqueuing message: {item}')
@@ -56,6 +76,15 @@ class MemoryDeque:
         logger.debug(f'Popular keywords: {popular}')
         return popular
     
+    def combine_markov_chains(self):
+        for message in self.queue:
+            for keyword, next_words in message.markov_chains:
+                if keyword in self.markov_chains:
+                    self.markov_chains[keyword].extend(next_words)
+                else:
+                    self.markov_chains[keyword] = next_words
+        return self.markov_chains
+
     def trim_old_messages(self):
         self.queue = deque(
             message for message in self.queue if not self.trim_condition(message)
