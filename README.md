@@ -1,16 +1,19 @@
-# Twitch Chat Bot
+# Chat Bot
 
 ## Goal
 
-Develop a Twitch chat bot that interacts dynamically with users. The bot processes messages, generates responses, integrates with Twitch OAuth, logs activity, and stores data using Redis and MongoDB.
+Develop a chat bot that interacts dynamically with users. The bot processes messages, generates responses, integrates with Twitch using a Access Token, logs activity, and stores data using Redis and MongoDB. Supports two modes: Markov Chain and LLM.
 
 ## Features
 
 - Dynamic response generation
-- Twitch OAuth integration
+- Twitch integration
 - Logging with rotation every 4 months
 - Data storage with Redis and MongoDB
 - Firewall setup to secure the server 
+- Mode selection between Markov Chain and LLM
+- Docker containerization
+- GitHub Actions for CI/CD
 
 ## Project Structure
 
