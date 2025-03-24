@@ -1,92 +1,15 @@
-name: Deploy Applications
+name: Needs-Rework
 
 on:
   push:
     branches:
-      - master
+      - main
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  print-job:
     runs-on: ubuntu-latest
-    environment: prod
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Build chat-bot application
-      run: |
-        docker build -t chat-bot:latest -f ./Dockerfile-Bot .
-        docker save chat-bot:latest | gzip > chat-bot.tar.gz
-
-    - name: Build chat-management application
-      run: |
-        docker build -t chat-management:latest -f ./Dockerfile-Management .
-        docker save chat-management:latest | gzip > chat-management.tar.gz
-
-    - name: Generate Key
-      run: |
-        echo "${{ secrets.CHAT_PRIVATE_KEY }}" > key.secret && chmod 0600 key.secret
-
-    - name: Delete existing
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: ${{ secrets.CHAT_HOST }}
-        username: ${{ secrets.CHAT_USER }}
-        key: ${{ secrets.CHAT_PRIVATE_KEY }}
-        script: |
-          rm -f /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-bot.tar.gz /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-management.tar.gz
-          rm -f /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-bot.tar /${{ secrets.CHAT_USER }}/projects/chat-bot/chat-management.tar
-
-    - name: SCP files to server
-      run: |
-        scp -i key.secret -o StrictHostKeyChecking=no chat-bot.tar.gz ${{ secrets.CHAT_USER }}@${{ secrets.CHAT_HOST }}:/${{ secrets.CHAT_USER }}/projects/chat-bot/
-        scp -i key.secret -o StrictHostKeyChecking=no chat-management.tar.gz ${{ secrets.CHAT_USER }}@${{ secrets.CHAT_HOST }}:/${{ secrets.CHAT_USER }}/projects/chat-bot/
-
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: ${{ secrets.CHAT_HOST }}
-        username: ${{ secrets.CHAT_USER }}
-        key: ${{ secrets.CHAT_PRIVATE_KEY }}
-        script: |
-          cd /${{ secrets.CHAT_USER }}/projects/chat-bot
-          
-          gunzip chat-bot.tar.gz
-          gunzip chat-management.tar.gz
-
-          docker stop chat-bot 2>/dev/null || true
-          docker stop chat-management 2>/dev/null || true
-
-          docker rmi -f $(docker images chat-bot:latest -q) 2>/dev/null || true
-          docker rmi -f $(docker images chat-management:latest -q) 2>/dev/null || true
-          docker rm chat-bot
-          docker rm chat-management
-
-          docker load -i chat-bot.tar
-          docker load -i chat-management.tar          
-
-          docker stop chat-bot
-          docker stop chat-management
-
-          docker run -d --name chat-bot \
-            -e MONGO_URI="${{secrets.MONGO_URI}}" \
-            -e REDIS_URI="${{secrets.REDIS_URI}}" \
-            -e ACCESS_TOKEN="${{secrets.ACCESS_TOKEN}}" \
-            -e REFRESH_TOKEN="${{secrets.REFRESH_TOKEN}}" \
-            chat-bot:latest
-
-          docker run -d --name chat-management --network=host \
-            -e REDIRECT_URI="${{secrets.REDIRECT_URI}}" \
-            -e MONGO_URI="${{secrets.MONGO_URI}}" \
-            -e REDIS_URI="${{secrets.REDIS_URI}}" \
-            -e ACCESS_TOKEN="${{secrets.ACCESS_TOKEN}}" \
-            -e REFRESH_TOKEN="${{secrets.REFRESH_TOKEN}}" \
-            chat-management:latest  
-
-    - name: Remove Key
-      run: |
-        rm key.secret
+      - name: Print a message
+        run: echo "Temporary workflow until we have a proper deployment workflow"
