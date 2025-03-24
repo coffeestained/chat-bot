@@ -51,7 +51,7 @@ twitch_bot/
 2. **Build and run with Docker**:
     ```bash
     docker build -t twitch_bot .
-    docker run -d -p 3000:3000 --name twitch_bot twitch_bot
+    docker run -d -p 5000:5000 --name twitch_bot twitch_bot
     ```
 
 3. **Environment Variables**:

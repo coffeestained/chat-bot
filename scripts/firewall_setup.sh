@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of allowed ports
-ALLOWED_PORTS=(22 80 443 3000)
+ALLOWED_PORTS=(22 80 443 5000)
 
 # Flush existing rules
 iptables -F
