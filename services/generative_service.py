@@ -28,14 +28,18 @@ def generate_llm_response(message):
 
 def generate_markov_chain_response(deque):
     if deque:
-        random_word = random.choice(deque.get_popular_keywords())[0]
+        # Starts with the most popular keyword
+        random_word = deque.get_popular_keywords()[0][0]
         response = random_word + " "
+        # Generates a response of MAX_MARKOV_CHAIN_LENGTH - random.randint(0, 5) words
         for i in range(MAX_MARKOV_CHAIN_LENGTH - random.randint(0, 5)):
             try:
+                # Chooses possible next words from the Markov Chain from the current word
                 next_word = random.choice(deque.markov_chains[random_word])
                 if next_word:
                     response += next_word + " "
                 else:
+                    # If no next word, chooses a random word from the Markov Chain
                     next_word = random.choice(deque.markov_chains.keys())
                     response += next_word + " "
                 random_word = next_word
