@@ -4,6 +4,9 @@
 
 Develop a chat bot that interacts dynamically with users. The bot processes messages, generates responses, integrates with Twitch using a Access Token, logs activity, and stores data using Redis and MongoDB. Supports two modes: Markov Chain and LLM.
 
+There is intent to make mongodb and redis optional. I scaffolded the services to support them but they have really been necessary.
+I see MongoDB being used to store various analytics such as user engagement, message count, bot messages, etc.
+
 ## Features
 
 - Dynamic response generation

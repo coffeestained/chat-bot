@@ -77,6 +77,7 @@ class MemoryDeque:
         return popular
     
     def combine_markov_chains(self):
+        self.markov_chains = {}
         for message in self.queue:
             for keyword, next_words in message.markov_chains:
                 if keyword in self.markov_chains:
