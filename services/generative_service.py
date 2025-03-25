@@ -30,12 +30,10 @@ def generate_markov_chain_response(deque):
     if deque:
         random_word = random.choice(deque.get_popular_keywords())[0]
         response = random_word + " "
-        print(random_word, response)
-        for i in range(MAX_MARKOV_CHAIN_LENGTH):
+        for i in range(MAX_MARKOV_CHAIN_LENGTH - random.randint(0, 5)):
             try:
                 next_word = random.choice(deque.markov_chains[random_word])
                 if next_word:
-                    print(next_word)
                     response += next_word + " "
                 else:
                     next_word = random.choice(deque.markov_chains.keys())
