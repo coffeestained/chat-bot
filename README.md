@@ -1,5 +1,7 @@
 # Chat Bot
 
+> **Unmaintained.** A fun old project (2024): a Twitch chat bot that talks back using Markov chains or an LLM. Kept public for reference; expect rough edges and no updates.
+
 ## Goal
 
 Develop a chat bot that interacts dynamically with users. The bot processes messages, generates responses, integrates with Twitch using a Access Token, logs activity, and stores data using Redis and MongoDB. Supports two modes: Markov Chain and LLM.

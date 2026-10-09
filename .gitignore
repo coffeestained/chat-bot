@@ -1,4 +1,4 @@
 .env
 primary
 __pycache__
-logs
+logs*.pyc
